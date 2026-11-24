@@ -112,17 +112,21 @@ def _horario(valor):
     return hora
 
 
-def _lembrete(data, horario, profissional_id, especialidade, canal_whatsapp_ok):
-    """R4 e o veto do DPO: o texto que chega ao paciente."""
+def _lembrete(
+    data, horario, profissional_id, especialidade, canal_whatsapp_ok, sms_ok=True
+):
+    """R4 e o veto do DPO: escolhe WhatsApp, SMS ou contato manual."""
     quando = datetime.datetime.combine(data, horario) - datetime.timedelta(hours=24)
     texto = "Lembrete: você tem consulta amanhã, às %s, na ConectaSaúde." % horario.strftime("%H:%M")
 
     if canal_whatsapp_ok:
         canal, estado = "whatsapp", "pendente"
-    else:
-        # WhatsApp respondeu 429. Cai para SMS. Se o SMS também falhar,
-        # entra na fila de contato manual.
+    elif sms_ok:
+        # WhatsApp indisponível: utiliza o SMS como segunda opção.
         canal, estado = "sms", "pendente"
+    else:
+        # Os dois canais falharam: o lembrete fica aguardando contato manual.
+        canal, estado = "manual", "pendente"
 
     lembrete = {
         "canal": canal,
@@ -140,7 +144,7 @@ def _lembrete(data, horario, profissional_id, especialidade, canal_whatsapp_ok):
     return lembrete
 
 
-def agendar(pedido, whatsapp_ok=True):
+def agendar(pedido, whatsapp_ok=True, sms_ok=True):
     """Recebe o corpo do POST /agendamento e devolve (status, corpo)."""
     data = _data(pedido.get("data_agendamento"))
     horario = _horario(pedido.get("horario"))
@@ -159,7 +163,7 @@ def agendar(pedido, whatsapp_ok=True):
 
     lembrete = _lembrete(
         data, horario, profissional_id,
-        pedido.get("especialidade"), whatsapp_ok,
+        pedido.get("especialidade"), whatsapp_ok, sms_ok,
     )
 
     novo = {

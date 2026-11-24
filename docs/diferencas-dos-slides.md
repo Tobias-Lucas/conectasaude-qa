@@ -12,7 +12,8 @@ em `app/`: só biblioteca padrão do Python, nada para instalar. Ela implementa 
 RF-12 e duas telas, e mais nada.
 
 É uma fatia. Os 500 testes da regressão e os 232 verdes do go-live são da
-ficção da aula. Aqui são 14 asserts de API e 3 testes de tela.
+ficção da aula. Aqui são 15 asserts de API e 3 testes de tela. O C-11b cobre
+a falha simultânea do WhatsApp e do SMS.
 
 ## `app.conectasaude.test` não resolve
 
@@ -68,6 +69,13 @@ sequência para a mesma vaga: a primeira pega o 201, a segunda tem que bater no
 Não há API de WhatsApp aqui. O C-11 pede o fallback com
 `POST /agendamento?simular=whatsapp_429`. É superfície só de teste, e está
 documentada de propósito: esconder um stub é pior que assumir um.
+
+## O fallback de contato manual também é simulado
+
+Além do C-11, que simula a falha do WhatsApp e confirma o uso do SMS, o C-11b
+usa `simular=whatsapp_429,sms_503` para representar a indisponibilidade dos dois
+canais. Nesse cenário, o agendamento continua confirmado e o lembrete fica
+registrado com `canal=manual` e `estado=pendente`, aguardando contato da recepção.
 
 ## A data é fixa
 

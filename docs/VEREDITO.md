@@ -25,7 +25,7 @@ Que número você está usando, e de onde ele veio?
 
 | O que verifiquei | Resultado | Onde está a prova |
 |---|---|---|
-| Suíte de API (14 asserts) | | artefato `evidencias/newman.xml` do run |
+| Suíte de API (15 asserts) | | artefato `evidencias/newman.xml` do run |
 | Testes de tela (3) | | `testes-tela/target/surefire-reports/` |
 | | | |
 
@@ -57,17 +57,14 @@ A sua:
 
 ---
 
-## Sua parte: o teste que falta
+## C-11b — fallback para contato manual
 
-O caso **C-11** cobre o WhatsApp caindo para SMS. O RF-12 pede mais um passo:
-**se o SMS também falhar, o lembrete entra na fila de contato manual.** Esse
-caminho não tem teste e nem existe no servidor de laboratório.
+O caso **C-11** verifica a queda do WhatsApp para SMS. Para completar o fluxo
+previsto no RF-12, foi acrescentada a simulação em que os dois canais falham.
 
-Faça você:
-
-1. Em `app/regras.py`, deixe o SMS poder falhar (um segundo stub, parecido com
-   o `?simular=whatsapp_429`), e registre o lembrete como `manual`.
-2. Em `testes-api/conectasaude.postman_collection.json`, escreva o **C-11b**:
-   WhatsApp 429 e SMS indisponível, o lembrete tem que terminar em `manual`.
-3. Rode a suíte. Ela passa de 14 para 15 asserts.
-4. Commit, e o seu fork deixa de ser cópia.
+- Simulação: `?simular=whatsapp_429,sms_503`.
+- Resultado esperado: HTTP 201, com `lembrete.canal = manual` e
+  `lembrete.estado = pendente`.
+- O cenário foi incluído na collection do Postman e a suíte passa a ter 15
+  asserts. O resultado da nova execução deve ser registrado na tabela de
+  evidências acima antes da decisão final.

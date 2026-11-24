@@ -38,7 +38,7 @@ python3 app/servidor.py
 Em outro terminal:
 
 ```bash
-# 3. a regra de negócio, 14 asserts
+# 3. a regra de negócio, 15 asserts
 npx newman@6 run testes-api/conectasaude.postman_collection.json \
   -e testes-api/homologacao.postman_environment.json
 
@@ -100,9 +100,11 @@ docs/
    senha da Dra. Mariana não pode estar no código, e você precisa sentir isso
    uma vez.
 4. **Rode a pipeline.** Aba Actions > regressao-conectasaude > Run workflow.
-5. **Escreva o teste que falta.** Está em `docs/VEREDITO.md`, no fim: o caminho
-   do SMS que também falha. São 15 asserts quando você terminar.
-6. **Assine o veredito.** Preencha `docs/VEREDITO.md` e faça commit.
+5. **Confira o C-11b.** O cenário de falha simultânea do WhatsApp e do SMS
+   está na collection: o lembrete deve ficar com `canal=manual` e
+   `estado=pendente`.
+6. **Assine o veredito.** Depois de executar a suíte e guardar as evidências,
+   preencha `docs/VEREDITO.md` e faça commit.
 
 O passo 5 é o que separa um fork de um portfólio.
 
@@ -113,7 +115,7 @@ verificação barata embaixo, pouca verificação cara em cima.
 
 | Camada | Quantos | Quanto custa |
 |---|---|---|
-| API (Newman) | 14 asserts | milissegundos, roda em qualquer lugar |
+| API (Newman) | 15 asserts | milissegundos, roda em qualquer lugar |
 | Tela (Selenium) | 3 testes | segundos, precisa de navegador |
 | Visual (C-13) | 0 | fica com o humano, de propósito |
 

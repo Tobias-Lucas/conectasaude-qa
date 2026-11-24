@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "ConectaSaude - RF-12 POST /agendamento",
-    "description": "Os casos C-01 a C-12 da atividade da Aula Nacional 3, agora executáveis: 14 requisições, 14 asserts. O C-13 (cor e alinhamento do botão) não está aqui de propósito.",
+    "description": "Os casos C-01 a C-12 da atividade da Aula Nacional 3, incluindo o C-11b: 15 requisições, 15 asserts. O C-13 (cor e alinhamento do botão) não está aqui de propósito.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -224,6 +224,53 @@
           "});"
         ] }
       }]
+    },
+    {
+      "name": "C-11b WhatsApp e SMS indisponíveis, contato manual",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"data_agendamento\": \"03/12/2026\",\n  \"horario\": \"09:00\",\n  \"paciente_id\": \"P-0043\",\n  \"profissional_id\": \"DRA-ANA\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/agendamento?simular=whatsapp_429,sms_503",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "agendamento"
+          ],
+          "query": [
+            {
+              "key": "simular",
+              "value": "whatsapp_429,sms_503"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('C-11b - WhatsApp e SMS indisponíveis encaminham para contato manual', () => {",
+              "    pm.response.to.have.status(201);",
+              "    const lembrete = pm.response.json().lembrete;",
+              "    pm.expect(lembrete.canal).to.eql('manual');",
+              "    pm.expect(lembrete.estado).to.eql('pendente');",
+              "});"
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "C-12 texto do lembrete sem especialidade",

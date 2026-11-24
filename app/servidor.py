@@ -123,13 +123,17 @@ class Handler(BaseHTTPRequestHandler):
             if not isinstance(pedido, dict):
                 return self._responder(422, {"erro": "corpo não é JSON válido"})
 
-            # Stub de laboratório: deixa o teste reproduzir o 429 do WhatsApp
-            # sem depender da API de verdade. Ver docs/diferencas-dos-slides.md.
-            simular = parse_qs(partes.query).get("simular", [""])[0]
-            whatsapp_ok = simular != "whatsapp_429"
+            # Stubs de laboratório: simulam falhas sem chamar serviços reais.
+            # O C-11 usa whatsapp_429; o C-11b usa whatsapp_429,sms_503.
+            simulacoes = set(
+                parse_qs(partes.query).get("simular", [""])[0].split(",")
+            )
+            whatsapp_ok = "whatsapp_429" not in simulacoes
+            sms_ok = "sms_503" not in simulacoes
 
             try:
-                status, corpo = regras.agendar(pedido, whatsapp_ok=whatsapp_ok)
+                status, corpo = regras.agendar(
+                    pedido, whatsapp_ok=whatsapp_ok, sms_ok=sms_ok)
             except regras.Recusado as recusa:
                 return self._responder(recusa.status, {"erro": recusa.motivo})
             return self._responder(status, corpo)

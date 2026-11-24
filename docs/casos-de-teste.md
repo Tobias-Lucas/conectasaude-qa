@@ -24,6 +24,7 @@ horas: ela roda a cada commit.
 | C-09 | Horário 19:30 | 422 · fora do expediente | API |
 | C-10 | Duas recepcionistas confirmam o mesmo horário com o mesmo profissional | um 201 e um 409 | API (C-10a e C-10b) |
 | C-11 | WhatsApp responde 429 no envio do lembrete | SMS enviado | API |
+| C-11b | WhatsApp 429 e SMS indisponível | 201 + lembrete encaminhado para contato manual (`canal=manual`, `estado=pendente`) | API |
 | C-12 | Texto do lembrete que chega ao paciente | não contém especialidade médica | API |
 | C-13 | Cor e alinhamento do botão "Agendar" | conforme o protótipo | **não automatizado** |
 
@@ -33,13 +34,14 @@ Esse caso não passa no "determinístico".
 
 ## A contagem
 
-A suíte roda **14 requisições, 13 delas com teste, e 14 asserts**. A requisição
+A suíte roda **15 requisições, 14 delas com teste, e 15 asserts**. A requisição
 sem teste é o `setup`, que zera a agenda para a execução não depender de ordem.
-São 14 asserts porque o C-01 verifica duas coisas (o status e o corpo) e o C-10
-é dividido em duas requisições.
+São 15 asserts porque o C-01 verifica duas coisas (o status e o corpo), o C-10
+é dividido em duas requisições, e o C-11b acrescenta a verificação do fallback
+para contato manual.
 
-É o mesmo número que aparece no terminal do slide 8 da Aula 4:
-`14 passed · 0 failed`.
+O número 14 corresponde à suíte original apresentada no material da aula. Com
+a inclusão do C-11b, a coleção passa a executar 15 asserts.
 
 ## Os dois defeitos da v0.9
 
