@@ -1,0 +1,22 @@
+# build
+target/
+__pycache__/
+*.pyc
+
+# evidência gerada localmente
+evidencias/
+servidor.log
+newman/
+
+# ferramentas de quem montou o repositório
+.m2repo/
+.m2/
+.synkos/
+.synko-app/
+.claude/
+
+# editores e sistema
+.idea/
+.vscode/
+*.swp
+.DS_Store

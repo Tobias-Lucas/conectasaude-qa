@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ConectaSaúde · entrar</title>
+<style>
+:root{--ink:#0f172a;--soft:#475569;--acc:#0284c7;--linha:#dbe6f6}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#eef3fa;
+     font:400 16px/1.5 system-ui,Segoe UI,Roboto,sans-serif;color:var(--ink)}
+.cartao{background:#fff;border:1px solid var(--linha);border-radius:18px;padding:32px;
+        width:min(92vw,380px);box-shadow:0 14px 40px -16px rgba(15,23,42,.28)}
+h1{font-size:22px;margin:0 0 4px}
+p.sub{margin:0 0 22px;color:var(--soft);font-size:14px}
+label{display:block;font-size:13px;font-weight:600;margin:14px 0 4px}
+input{width:100%;padding:11px 12px;border:1px solid var(--linha);border-radius:10px;font-size:15px}
+input:focus{outline:2px solid var(--acc);outline-offset:1px}
+button{width:100%;margin-top:20px;padding:12px;border:0;border-radius:10px;background:var(--acc);
+       color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.erro{margin:14px 0 0;color:#b91c1c;font-size:14px;font-weight:600}
+.rodape{margin-top:18px;font-size:12px;color:var(--soft);text-align:center}
+</style>
+</head>
+<body>
+<main class="cartao">
+  <h1>ConectaSaúde</h1>
+  <p class="sub">Agendamento · ambiente de laboratório</p>
+  <form method="post" action="/login">
+    <label for="email">E-mail</label>
+    <input id="email" name="email" type="email" data-testid="email" autocomplete="username">
+    <label for="senha">Senha</label>
+    <input id="senha" name="senha" type="password" data-testid="senha" autocomplete="current-password">
+    <button type="submit" data-testid="entrar">Entrar</button>
+  </form>
+  <!--ERRO-->
+  <p class="rodape">Caso fictício, criado para a disciplina.</p>
+</main>
+</body>
+</html>

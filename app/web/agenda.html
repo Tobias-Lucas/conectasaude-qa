@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ConectaSaúde · agenda</title>
+<style>
+:root{--ink:#0f172a;--soft:#475569;--acc:#0284c7;--linha:#dbe6f6}
+*{box-sizing:border-box}
+body{margin:0;background:#eef3fa;font:400 16px/1.5 system-ui,Segoe UI,Roboto,sans-serif;color:var(--ink)}
+header{background:#fff;border-bottom:1px solid var(--linha);padding:14px 22px;display:flex;
+       justify-content:space-between;align-items:center}
+header b{font-size:17px}
+header span{font-size:13px;color:var(--soft)}
+main{padding:28px 22px;max-width:760px;margin:0 auto}
+h1{font-size:24px;margin:0 0 6px}
+.cartao{background:#fff;border:1px solid var(--linha);border-radius:16px;padding:22px;margin-top:18px;
+        box-shadow:0 14px 40px -20px rgba(15,23,42,.25)}
+.cartao h2{font-size:15px;margin:0 0 8px;color:var(--acc);text-transform:uppercase;letter-spacing:.08em}
+.cartao p{margin:0;color:var(--soft);font-size:15px}
+code{background:#f1f5f9;border-radius:5px;padding:2px 6px;font-size:14px}
+</style>
+</head>
+<body>
+<header><b>ConectaSaúde</b><span>build {{BUILD}} · ambiente de laboratório</span></header>
+<main>
+  <h1 data-testid="boas-vindas">Bem-vinda, {{NOME}}</h1>
+  <p style="color:#475569">Agenda do dia · Rede Vitalle</p>
+
+  <div class="cartao">
+    <h2>Agendamento</h2>
+    <p>Os agendamentos desta tela são criados pela API do RF-12, em
+       <code>POST /agendamento</code>. A suíte de API cobre as regras; esta tela
+       existe para o teste de fluxo do usuário, que é o topo da pirâmide.</p>
+  </div>
+
+  <div class="cartao">
+    <h2>Lembrete</h2>
+    <p>WhatsApp 24 horas antes. Se falhar, SMS. Se o SMS falhar, a recepção
+       recebe o contato na fila manual. O texto nunca cita especialidade médica.</p>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,249 @@
+{
+  "info": {
+    "name": "ConectaSaude - RF-12 POST /agendamento",
+    "description": "Os casos C-01 a C-12 da atividade da Aula Nacional 3, agora executáveis: 14 requisições, 14 asserts. O C-13 (cor e alinhamento do botão) não está aqui de propósito.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "setup - zerar agenda",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/_laboratorio/zerar", "host": ["{{baseUrl}}"], "path": ["_laboratorio", "zerar"] }
+      },
+      "event": []
+    },
+    {
+      "name": "C-01 agendamento feliz",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"{{hoje}}\",\n  \"horario\": \"14:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "// o esperado do C-01, escrito antes do clique",
+          "pm.test('C-01 - hoje é aceito (201)', () => {",
+          "    pm.response.to.have.status(201);",
+          "});",
+          "pm.test('C-01 - JSON traz o agendamento', () => {",
+          "    const j = pm.response.json();",
+          "    pm.expect(j.data_agendamento).to.eql(pm.environment.get('hoje'));",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-02 data retroativa",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"{{ontem}}\",\n  \"horario\": \"14:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-02 - data retroativa é recusada (422)', () => {",
+          "    pm.response.to.have.status(422);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-03 data futura - 30/11/2026",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"30/11/2026\",\n  \"horario\": \"10:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-03 - data futura é aceita (201)', () => {",
+          "    pm.response.to.have.status(201);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-04 data futura - 15/12/2026",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"15/12/2026\",\n  \"horario\": \"10:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-04 - data futura é aceita (201)', () => {",
+          "    pm.response.to.have.status(201);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-05 data que nao existe - 31/06/2027",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"31/06/2027\",\n  \"horario\": \"10:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-05 - data inexistente é recusada (422)', () => {",
+          "    pm.response.to.have.status(422);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-06 formato invalido - 2026-10-30",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"2026-10-30\",\n  \"horario\": \"10:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-06 - formato fora do DD/MM/AAAA é recusado (422)', () => {",
+          "    pm.response.to.have.status(422);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-07 data vazia",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"\",\n  \"horario\": \"10:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-07 - campo obrigatório vazio é recusado (422)', () => {",
+          "    pm.response.to.have.status(422);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-08 horario 07:15 (fora do passo)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"30/11/2026\",\n  \"horario\": \"07:15\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-08 - horário fora do passo de 30 min é recusado (422)', () => {",
+          "    pm.response.to.have.status(422);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-09 horario 19:30 (fora do expediente)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"30/11/2026\",\n  \"horario\": \"19:30\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-09 - horário fora do expediente é recusado (422)', () => {",
+          "    pm.response.to.have.status(422);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-10a vaga livre e reservada",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"30/11/2026\",\n  \"horario\": \"11:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-10a - a primeira recepcionista consegue a vaga (201)', () => {",
+          "    pm.response.to.have.status(201);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-10b mesma vaga, segundo pedido",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"30/11/2026\",\n  \"horario\": \"11:00\",\n  \"paciente_id\": \"P-0099\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "// dois pacientes, uma cadeira. O segundo tem que bater na porta (409).",
+          "pm.test('C-10b - a vaga já ocupada devolve 409', () => {",
+          "    pm.response.to.have.status(409);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-11 WhatsApp 429, cai para SMS",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"01/12/2026\",\n  \"horario\": \"09:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento?simular=whatsapp_429", "host": ["{{baseUrl}}"], "path": ["agendamento"], "query": [{ "key": "simular", "value": "whatsapp_429" }] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('C-11 - WhatsApp indisponível cai para SMS', () => {",
+          "    pm.response.to.have.status(201);",
+          "    pm.expect(pm.response.json().lembrete.canal).to.eql('sms');",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "C-12 texto do lembrete sem especialidade",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"data_agendamento\": \"02/12/2026\",\n  \"horario\": \"09:00\",\n  \"paciente_id\": \"P-0042\",\n  \"profissional_id\": \"DRA-ANA\",\n  \"especialidade\": \"Cardiologia\"\n}" },
+        "url": { "raw": "{{baseUrl}}/agendamento", "host": ["{{baseUrl}}"], "path": ["agendamento"] }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "// o veto do DPO: dado de saúde não vai para a mensagem do paciente",
+          "pm.test('C-12 - o texto do lembrete não cita especialidade', () => {",
+          "    pm.response.to.have.status(201);",
+          "    const texto = pm.response.json().lembrete.texto.toLowerCase();",
+          "    pm.expect(texto).to.not.include('cardiolog');",
+          "});"
+        ] }
+      }]
+    }
+  ]
+}
